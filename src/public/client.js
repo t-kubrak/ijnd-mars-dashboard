@@ -36,14 +36,15 @@ const selectRover = (selectedRover) => {
 
 // create content
 const App = (state) => {
-    const { rovers, apod, roverData, loadingRover } = state
+    const { rovers, roverData, loadingRover } = state
+    const ButtonList = Buttons(List, "li-buttons")
 
     return `
         <header></header>
         <main>
             <section>${Greeting()}</section>
             <section>
-                ${List(Buttons, rovers, "li-buttons")}
+                ${ButtonList(rovers)}
             </section>
             <section>
                 ${Rover(roverData, loadingRover)}
@@ -61,28 +62,32 @@ window.addEventListener('load', () => {
 
 // ------------------------------------------------------  COMPONENTS
 
-const List = (itemsFromData, data, className) => {
+const List = (items, className) => {
     return `
         <ul class="${className}">
-            ${itemsFromData(data)}
+            ${items}
         </ul>
    `
 }
 
-const Buttons = (data) => {
-    return `
+const Buttons = (List, className) => (data) => {
+    const items =  `
         ${data.map(rover =>
             `<li><button class="btnRover" data-rover="${rover}">${rover}</button></li>`
         ).join('')}
     `
+
+    return List(items, className)
 }
 
-const Photos = (photos) => {
-    return `
-        ${photos.map(record =>
+const Photos = (List, className) => (data) => {
+    const items =  `
+        ${data.map(record =>
             `<li><img src="${record.img_src}"></li>`
         ).join('')}
     `
+
+    return List(items, className)
 }
 
 const Rover = (data, loadingRover) => {
@@ -94,13 +99,15 @@ const Rover = (data, loadingRover) => {
         return ''
     }
 
+    const PhotosList = Photos(List, "li-photos");
+
     return `
         <h2>${data.rover.name}</h2>
         <p>Launch Date: ${data.rover.launch_date}</p>
         <p>Landing Date: ${data.rover.landing_date}</p>
         <p>Status: ${data.rover.status}</p>
         <p>Date the most recent photos were taken: ${data.rover.max_date}</p>
-        ${List(Photos, data.photos, "li-photos")}
+        ${PhotosList(data.photos)}
     `
 }
 
