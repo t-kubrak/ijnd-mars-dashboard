@@ -72,16 +72,16 @@ const List = (itemsFromData, data, className) => {
 const Buttons = (data) => {
     return `
         ${data.map(rover =>
-        `<li><button class="btnRover" data-rover="${rover}">${rover}</button></li>`
-    ).join('')}
+            `<li><button class="btnRover" data-rover="${rover}">${rover}</button></li>`
+        ).join('')}
     `
 }
 
 const Photos = (photos) => {
     return `
         ${photos.map(record =>
-        `<li><img src="${record.img_src}"></li>`
-    ).join('')}
+            `<li><img src="${record.img_src}"></li>`
+        ).join('')}
     `
 }
 
