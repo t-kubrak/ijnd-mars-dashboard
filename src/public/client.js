@@ -1,7 +1,7 @@
 const store = {
     user: { name: "Student" },
     apod: '',
-    rovers: ['Curiosity', 'Opportunity', 'Spirit'],
+    rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
     roverData: [],
     selectedRover: ''
 }
@@ -46,13 +46,7 @@ const App = (state) => {
         <main>
             <section>${Greeting()}</section>
             <section>
-                <ul class="li-buttons">
-                    ${rovers.map(rover =>
-                        `<li>
-                            <button class="btnRover" data-rover="${rover}">${rover}</button>
-                        </li>`
-                    ).join('')}
-                </ul>
+                ${List(Buttons, rovers, "li-buttons")}
             </section>
             <section>
                 ${Rover(roverData)}
@@ -70,6 +64,30 @@ window.addEventListener('load', () => {
 
 // ------------------------------------------------------  COMPONENTS
 
+const List = (itemsFromData, data, className) => {
+    return `
+        <ul class="${className}">
+            ${itemsFromData(data)}
+        </ul>
+   `
+}
+
+const Buttons = (data) => {
+    return `
+        ${data.map(rover =>
+        `<li><button class="btnRover" data-rover="${rover}">${rover}</button></li>`
+    ).join('')}
+    `
+}
+
+const Photos = (photos) => {
+    return `
+        ${photos.map(record =>
+        `<li><img src="${record.img_src}"></li>`
+    ).join('')}
+    `
+}
+
 const Rover = (data) => {
     if (Object.keys(data).length === 0) {
         return ''
@@ -81,11 +99,7 @@ const Rover = (data) => {
         <p>Landing Date: ${data.rover.landing_date}</p>
         <p>Status: ${data.rover.status}</p>
         <p>Date the most recent photos were taken: ${data.rover.max_date}</p>
-        <ul class="li-photos">
-            ${data.photos.map(record =>
-                `<li><img src="${record.img_src}"></li>`
-            ).join('')}
-        </ul>
+        ${List(Photos, data.photos, "li-photos")}
     `
 }
 
