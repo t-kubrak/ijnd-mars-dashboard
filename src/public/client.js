@@ -3,20 +3,17 @@ const store = {
     apod: '',
     rovers: Immutable.List(['Curiosity', 'Opportunity', 'Spirit']),
     roverData: [],
-    selectedRover: ''
+    selectedRover: '',
+    loadingRover: false,
 }
 
 // add our markup to the page
 const root = document.getElementById('root')
 
-const updateStore = (store, newState, isRender = true) => {
+const updateStore = (store, newState) => {
     store = Object.assign(store, newState)
-    console.log(store)
-
-    if (isRender === true) {
-        render(root, store)
-        addEventListeners()
-    }
+    render(root, store)
+    addEventListeners()
 }
 
 const render = async (root, state) => {
@@ -39,7 +36,7 @@ const selectRover = (selectedRover) => {
 
 // create content
 const App = (state) => {
-    const { rovers, apod, roverData } = state
+    const { rovers, apod, roverData, loadingRover } = state
 
     return `
         <header></header>
@@ -49,7 +46,7 @@ const App = (state) => {
                 ${List(Buttons, rovers, "li-buttons")}
             </section>
             <section>
-                ${Rover(roverData)}
+                ${Rover(roverData, loadingRover)}
             </section>
         </main>
         <footer></footer>
@@ -88,7 +85,11 @@ const Photos = (photos) => {
     `
 }
 
-const Rover = (data) => {
+const Rover = (data, loadingRover) => {
+    if (loadingRover) {
+        return `<p>Loading data from NASA...</p>`
+    }
+
     if (Object.keys(data).length === 0) {
         return ''
     }
@@ -160,10 +161,11 @@ const getImageOfTheDay = (state) => {
 const getPhotosForRover = (rover) => {
     fetch(`http://localhost:3000/rovers/${rover}`)
         .then(res => res.json())
-        .then(data => updateStore(store, { roverData: data }))
+        .then(data => updateStore(store, { roverData: data, loadingRover: false }))
 }
 
 const getRoverInfo = (rover) => {
+    updateStore(store, { loadingRover: true })
     selectRover(rover)
     getPhotosForRover(rover)
 }
