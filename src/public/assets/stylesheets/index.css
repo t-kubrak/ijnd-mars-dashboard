@@ -6,6 +6,8 @@ body {
   flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
+  font-family: 'Advent Pro', sans-serif;
+  font-size: 20px;
 }
 
 header {
@@ -24,6 +26,9 @@ footer {
 /* -------------------  TABLET  --------------------- */
 @media (min-width: 768px) {
   /* use mobile */
+  .li-buttons li {
+    display: inline-block;
+  }
 }
 
 /* -------------------  DESKTOP  -------------------- */
@@ -40,4 +45,10 @@ footer {
 
 .li-buttons, .li-photos {
   list-style: none;
+}
+
+.btnRover {
+  margin: 10px 0;
+  width: 200px;
+  padding: 20px;
 }
