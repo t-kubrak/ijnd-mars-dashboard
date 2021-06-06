@@ -2,7 +2,7 @@ const store = {
     user: { name: "Student" },
     apod: '',
     rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-    photos: [],
+    roverData: [],
     selectedRover: ''
 }
 
@@ -39,19 +39,23 @@ const selectRover = (selectedRover) => {
 
 // create content
 const App = (state) => {
-    const { rovers, apod } = state
+    const { rovers, apod, roverData } = state
 
     return `
         <header></header>
         <main>
+            <section>${Greeting()}</section>
             <section>
-                <ul class="buttons">
+                <ul class="li-buttons">
                     ${rovers.map(rover =>
                         `<li>
                             <button class="btnRover" data-rover="${rover}">${rover}</button>
                         </li>`
                     ).join('')}
                 </ul>
+            </section>
+            <section>
+                ${Rover(roverData)}
             </section>
         </main>
         <footer></footer>
@@ -66,6 +70,25 @@ window.addEventListener('load', () => {
 
 // ------------------------------------------------------  COMPONENTS
 
+const Rover = (data) => {
+    if (Object.keys(data).length === 0) {
+        return ''
+    }
+
+    return `
+        <h2>${data.rover.name}</h2>
+        <p>Launch Date: ${data.rover.launch_date}</p>
+        <p>Landing Date: ${data.rover.landing_date}</p>
+        <p>Status: ${data.rover.status}</p>
+        <p>Date the most recent photos were taken: ${data.rover.max_date}</p>
+        <ul class="li-photos">
+            ${data.photos.map(record =>
+                `<li><img src="${record.img_src}"></li>`
+            ).join('')}
+        </ul>
+    `
+}
+
 // Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
 const Greeting = (name) => {
     if (name) {
@@ -75,7 +98,7 @@ const Greeting = (name) => {
     }
 
     return `
-        <h1>Hello!</h1>
+        <h1>Hello! Please select the Mars rover to see the latest info</h1>
     `
 }
 
@@ -123,7 +146,7 @@ const getImageOfTheDay = (state) => {
 const getPhotosForRover = (rover) => {
     fetch(`http://localhost:3000/rovers/${rover}`)
         .then(res => res.json())
-        .then(data => updateStore(store, { photos: data.photosData.photos }))
+        .then(data => updateStore(store, { roverData: data }))
 }
 
 const getRoverInfo = (rover) => {
